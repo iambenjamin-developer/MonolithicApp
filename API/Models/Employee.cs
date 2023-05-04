@@ -10,6 +10,6 @@
         public DateTime HireDate { get; set; }
         public decimal Salary { get; set; }
         public int DepartmentId { get; set; }
-        public bool IsMellennial { get; set; }
+        public bool IsActive { get; set; }
     }
 }

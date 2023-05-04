@@ -57,21 +57,39 @@ namespace API.Controllers
             //Obtener la primera hoja del libro de excel
             ISheet sheet = workbook.GetSheetAt(0);
 
+            int idColumnIndex = 0;
             int nameColumnIndex = 1;
             int lastNameColumnIndex = 2;
+            int emailColumnIndex = 3;
+            int phoneNumberColumnIndex = 4;
+            int hireDateColumnIndex = 5;
             int salaryColumnIndex = 6;
+            int departmentIdColumnIndex = 7;
+            int isActiveColumnIndex = 8;
 
             //Nombre de Cabeceras - Fila 1
+            string idHeaderName = "Id";
             string nameHeaderName = "Nombre";
             string lastNameHeaderName = "Apellido";
+            string emailHeaderName = "Email";
+            string phoneNumberHeaderName = "Teléfono";
+            string hireDateHeaderName = "Fecha de contratación";
             string salaryHeaderName = "Salario";
+            string departmentIdHeaderName = "Departamento";
+            string isActiveHeaderName = "Está Activo?";
 
             //Nombre de Cabeceras dinámicas
             if (sheet.GetRow(0) != null)
             {
+                idHeaderName = sheet.GetRow(0).GetCell(idColumnIndex).StringCellValue;
                 nameHeaderName = sheet.GetRow(0).GetCell(nameColumnIndex).StringCellValue;
                 lastNameHeaderName = sheet.GetRow(0).GetCell(lastNameColumnIndex).StringCellValue;
+                emailHeaderName = sheet.GetRow(0).GetCell(emailColumnIndex).StringCellValue;
+                phoneNumberHeaderName = sheet.GetRow(0).GetCell(phoneNumberColumnIndex).StringCellValue;
+                hireDateHeaderName = sheet.GetRow(0).GetCell(hireDateColumnIndex).StringCellValue;
                 salaryHeaderName = sheet.GetRow(0).GetCell(salaryColumnIndex).StringCellValue;
+                departmentIdHeaderName = sheet.GetRow(0).GetCell(departmentIdColumnIndex).StringCellValue;
+                isActiveHeaderName = sheet.GetRow(0).GetCell(isActiveColumnIndex).StringCellValue;
             }
 
             for (int rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
@@ -81,17 +99,28 @@ namespace API.Controllers
                 {
                     numberOfRecords++;
 
-                    string nameCellValue = sheet.GetRow(rowIndex).GetCell(nameColumnIndex).StringCellValue.Trim().ToUpperInvariant();
-                    string lastNameCellValue = sheet.GetRow(rowIndex).GetCell(lastNameColumnIndex).StringCellValue;
-                    decimal salaryCellValue = (decimal)sheet.GetRow(rowIndex).GetCell(salaryColumnIndex).NumericCellValue;
+                    var idCellValue = sheet.GetRow(rowIndex).GetCell(idColumnIndex).NumericCellValue;
+                    var nameCellValue = sheet.GetRow(rowIndex).GetCell(nameColumnIndex).StringCellValue;
+                    var lastNameCellValue = sheet.GetRow(rowIndex).GetCell(lastNameColumnIndex).StringCellValue;
+                    var emailCellValue = sheet.GetRow(rowIndex).GetCell(emailColumnIndex).StringCellValue;
+                    var phoneNumberCellValue = sheet.GetRow(rowIndex).GetCell(phoneNumberColumnIndex).StringCellValue;
+                    var hireDateCellValue = sheet.GetRow(rowIndex).GetCell(hireDateColumnIndex).DateCellValue;
+                    var salaryCellValue = sheet.GetRow(rowIndex).GetCell(salaryColumnIndex).NumericCellValue;
+                    var departmentIdCellValue = sheet.GetRow(rowIndex).GetCell(departmentIdColumnIndex).NumericCellValue;
+                    var isActive = sheet.GetRow(rowIndex).GetCell(isActiveColumnIndex).StringCellValue;
 
                     employees.Add(new Employee
                     {
+                        Id = (long)idCellValue,
                         Name = nameCellValue,
                         LastName = lastNameCellValue,
-                        Salary = salaryCellValue
+                        Email = emailCellValue,
+                        PhoneNumber = phoneNumberCellValue,
+                        HireDate = hireDateCellValue,
+                        Salary = (decimal)salaryCellValue,
+                        DepartmentId = (int)departmentIdCellValue,
+                        IsActive = isActive == "Y"
                     });
-
                 }
             }
 
@@ -110,7 +139,7 @@ namespace API.Controllers
                 HireDate = new DateTime(1987, 06, 17, 16, 10, 12),
                 Salary = 24563.264M,
                 DepartmentId = 90,
-                IsMellennial = true
+                IsActive = true
             },
             new Employee{
                 Id= 103,
@@ -121,7 +150,7 @@ namespace API.Controllers
                 HireDate = new DateTime(2021, 12, 31, 7, 05, 22),
                 Salary = 1999.98M,
                 DepartmentId = 90,
-                IsMellennial = false
+                IsActive = false
             },
             new Employee{
                 Id= 129,
@@ -132,7 +161,7 @@ namespace API.Controllers
                 HireDate = new DateTime(1997, 03, 29, 21, 09, 0),
                 Salary = 1800,
                 DepartmentId = 50,
-                IsMellennial = true
+                IsActive = true
             }
             };
 
@@ -235,7 +264,7 @@ namespace API.Controllers
                 cell.SetCellValue(employee.DepartmentId);
 
                 cell = row.CreateCell(8);
-                cell.SetCellValue(employee.IsMellennial ? "Y" : "N");
+                cell.SetCellValue(employee.IsActive ? "Y" : "N");
             }
 
             var ms = new MemoryStream();
