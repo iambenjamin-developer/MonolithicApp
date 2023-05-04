@@ -25,7 +25,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        private List<Employee> ReadExcelFile(IFormFile file)
+        private static List<Employee> ReadExcelFile(IFormFile file)
         {
             var employees = new List<Employee>();
             int numberOfRecords = 0;
