@@ -32,101 +32,7 @@ namespace API.Controllers
         {
             var employees = GetEmployees(request.DepartmentId);
 
-            IWorkbook workbook = new XSSFWorkbook();
-
-            //Styles
-            var headerStyle = workbook.CreateCellStyle();
-            headerStyle.FillForegroundColor = HSSFColor.Yellow.Index2;
-            headerStyle.FillPattern = FillPattern.SolidForeground;
-
-            var dataFormat = workbook.CreateDataFormat();
-            var dateTimeStyle = workbook.CreateCellStyle();
-            dateTimeStyle.DataFormat = dataFormat.GetFormat("dd/MM/yyyy HH:mm:ss");
-
-
-            //Colocar nombre de la pestaña
-            ISheet worksheet = workbook.CreateSheet("Pestaña Nº1");
-
-            int rowNumber = 0;
-
-            IRow row = worksheet.CreateRow(rowNumber++);
-
-            //Table Header
-            ICell cell = row.CreateCell(0);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Id");
-
-            cell = row.CreateCell(1);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Nombre");
-
-            cell = row.CreateCell(2);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Apellido");
-
-            cell = row.CreateCell(3);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Email");
-
-            cell = row.CreateCell(4);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Teléfono");
-
-            cell = row.CreateCell(5);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Fecha de contratación");
-
-            cell = row.CreateCell(6);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Salario");
-
-            cell = row.CreateCell(7);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Departamento");
-
-            cell = row.CreateCell(8);
-            cell.CellStyle = headerStyle;
-            cell.SetCellValue("Es millennial");
-
-            //Table Body
-            foreach (var employee in employees)
-            {
-                row = worksheet.CreateRow(rowNumber++);
-
-                //Table Header
-                cell = row.CreateCell(0);
-                cell.SetCellValue(employee.Id);
-
-                cell = row.CreateCell(1);
-                cell.SetCellValue(employee.Name);
-
-                cell = row.CreateCell(2);
-                cell.SetCellValue(employee.LastName);
-
-                cell = row.CreateCell(3);
-                cell.SetCellValue(employee.Email);
-
-                cell = row.CreateCell(4);
-                cell.SetCellValue(employee.PhoneNumber);
-
-                cell = row.CreateCell(5);
-                cell.CellStyle = dateTimeStyle;
-                cell.SetCellValue(employee.HireDate);
-
-                cell = row.CreateCell(6);
-                cell.SetCellValue((double)employee.Salary);
-
-                cell = row.CreateCell(7);
-                cell.SetCellValue(employee.DepartmentId);
-
-                cell = row.CreateCell(8);
-                cell.SetCellValue(employee.IsMellennial ? "Y" : "N");
-            }
-
-            var ms = new MemoryStream();
-            workbook.Write(ms, true);
-            byte[] bytes = ms.ToArray();
-            ms.Close();
+            var bytes = CreateExcelFile(employees);
 
             return File(bytes, "application/vnd.ms-excel", "Employees.xlsx");
         }
@@ -239,6 +145,105 @@ namespace API.Controllers
                 return employees.Where(x => x.DepartmentId == departmentId).ToList();
             }
 
+        }
+
+        private static byte[] CreateExcelFile(List<Employee> employees)
+        {
+            IWorkbook workbook = new XSSFWorkbook();
+
+            //Styles
+            var headerStyle = workbook.CreateCellStyle();
+            headerStyle.FillForegroundColor = HSSFColor.Yellow.Index2;
+            headerStyle.FillPattern = FillPattern.SolidForeground;
+
+            var dataFormat = workbook.CreateDataFormat();
+            var dateTimeStyle = workbook.CreateCellStyle();
+            dateTimeStyle.DataFormat = dataFormat.GetFormat("dd/MM/yyyy HH:mm:ss");
+
+            //Colocar nombre de la pestaña
+            ISheet worksheet = workbook.CreateSheet("Pestaña Nº1");
+
+            int rowNumber = 0;
+            IRow row = worksheet.CreateRow(rowNumber++);
+
+            //Table Header
+            ICell cell = row.CreateCell(0);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Id");
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Nombre");
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Apellido");
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Email");
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Teléfono");
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Fecha de contratación");
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Salario");
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Departamento");
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Es millennial");
+
+            //Table Body
+            foreach (var employee in employees)
+            {
+                row = worksheet.CreateRow(rowNumber++);
+
+                //Table Header
+                cell = row.CreateCell(0);
+                cell.SetCellValue(employee.Id);
+
+                cell = row.CreateCell(1);
+                cell.SetCellValue(employee.Name);
+
+                cell = row.CreateCell(2);
+                cell.SetCellValue(employee.LastName);
+
+                cell = row.CreateCell(3);
+                cell.SetCellValue(employee.Email);
+
+                cell = row.CreateCell(4);
+                cell.SetCellValue(employee.PhoneNumber);
+
+                cell = row.CreateCell(5);
+                cell.CellStyle = dateTimeStyle;
+                cell.SetCellValue(employee.HireDate);
+
+                cell = row.CreateCell(6);
+                cell.SetCellValue((double)employee.Salary);
+
+                cell = row.CreateCell(7);
+                cell.SetCellValue(employee.DepartmentId);
+
+                cell = row.CreateCell(8);
+                cell.SetCellValue(employee.IsMellennial ? "Y" : "N");
+            }
+
+            var ms = new MemoryStream();
+            workbook.Write(ms, true);
+            byte[] bytes = ms.ToArray();
+            ms.Close();
+
+            return bytes;
         }
     }
 }
