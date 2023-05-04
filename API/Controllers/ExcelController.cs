@@ -30,7 +30,7 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult Export([FromBody] ExportExcelDTO request)
         {
-            var employees = GetEmployees();
+            var employees = GetEmployees(request.DepartmentId);
 
             IWorkbook workbook = new XSSFWorkbook();
 
@@ -192,7 +192,7 @@ namespace API.Controllers
             return employees;
         }
 
-        private static List<Employee> GetEmployees()
+        private static List<Employee> GetEmployees(int departmentId)
         {
             var employees = new List<Employee>() {
             new Employee{
@@ -230,7 +230,15 @@ namespace API.Controllers
             }
             };
 
-            return employees;
+            if (departmentId == 0)
+            {
+                return employees;
+            }
+            else
+            {
+                return employees.Where(x => x.DepartmentId == departmentId).ToList();
+            }
+
         }
     }
 }
