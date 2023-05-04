@@ -11,9 +11,9 @@ namespace API.Controllers
     public class ExcelController : ControllerBase
     {
 
-        [Route("import")]
+        [Route("Import")]
         [HttpPost]
-        public ActionResult Post([FromForm] ImportExcelDTO request)
+        public ActionResult Import([FromForm] ImportExcelDTO request)
         {
             if (Path.GetExtension(request.File.FileName) != ".xls" && Path.GetExtension(request.File.FileName) != ".xlsx")
             {
@@ -84,7 +84,5 @@ namespace API.Controllers
 
             return employees;
         }
-
-
     }
 }
