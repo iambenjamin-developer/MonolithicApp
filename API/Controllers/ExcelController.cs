@@ -230,7 +230,7 @@ namespace API.Controllers
 
             cell = row.CreateCell(8);
             cell.CellStyle = headerStyle;
-            cell.SetCellValue("Es millennial");
+            cell.SetCellValue("Está activo?");
 
             //Table Body
             foreach (var employee in employees)
